@@ -1,9 +1,6 @@
 import {initializeApp} from "firebase/app"
 import{getAuth} from "firebase/auth"
-
-const firebaseConfig={
-   
-}
+import {firebaseConfig} from "./firebaseConfig";
 
 const app=initializeApp(firebaseConfig);
 var auth=null;
