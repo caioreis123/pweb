@@ -1,17 +1,34 @@
 import logo from '../../assets/login.png'
-import { Link } from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import { useState, useContext } from 'react';
 import {AuthContext} from '../../contexts/auth';
+import auth from "../../services/firebaseConnection";
+import {createUserWithEmailAndPassword} from "firebase/auth";
+
 function SignUp() {
     const [nome, setNome]=useState('');
     const [email, setEmail]=useState('');
     const [senha, setSenha]=useState('');
-    //const {signUp, loading}=useContext(AuthContext);
+
+    const navigate = useNavigate();
     
-    function handleSubmit(e){
+    async function handleSubmit(e){
       e.preventDefault();
-     // if(email!==''&&senha!==''&&nome!=='')
-      //  signUp(email, senha, nome);
+        console.log("botão de cadastro clicado");
+     if(email!==''&&senha!==''&&nome!==''){
+         try{
+             await createUserWithEmailAndPassword(auth, email, senha);
+             console.log("Usuario criado com sucesso");
+             navigate('/dashboard')
+         }
+         catch(error){
+             alert(error.message);
+         }
+
+     }
+     else{
+         alert("Preencha todos os campos");
+     }
     }
 
     return (

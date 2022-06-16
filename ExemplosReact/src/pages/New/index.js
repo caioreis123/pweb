@@ -8,7 +8,7 @@ import firebase from '../../services/firebaseConnection';
 
 export default function New() {
 
-    const [clientes, setClientes] = useState([]);
+    const [clientes, setClientes] = useState([{id: 1, nome:"caio"}, {id:2, nome: 'maria'}]);
     const [loadingClientes, setLoadingClientes] = useState(true);
     const [clienteSelecionado, setClienteSelecionado] = useState(0);
     const [assunto, setAssunto] = useState('Suporte');
@@ -25,7 +25,13 @@ export default function New() {
 
     async function handleChamado(e) {
         e.preventDefault();
-       
+        console.log("clicou em criar chamado novo")
+        console.log(clientes)
+        console.log(clienteSelecionado)
+        console.log(assunto)
+        console.log(status)
+        console.log(complemento)
+        console.log("fim")
     }
 
     return (
@@ -42,17 +48,22 @@ export default function New() {
                     <form onSubmit={(e) => { handleChamado(e) }} className="form-profile">
                         <label>Cliente</label>
                         {loadingClientes ?
-                            <input type="text" value="Carregando..." />
-                            : <select value={clienteSelecionado} onChange={(e) => setClienteSelecionado(e.target.value)}>
+                            <select value={clienteSelecionado} onChange={(e) => {
+                                setClienteSelecionado(e.target.value)
+                            }}>
                                 {clientes.map((item, index) => {
                                     return (<option key={item.id} value={index}>{item.nome}</option>);
                                 })}
                             </select>
+                            :
+                            <input type="text" value="Carregando..." />
                         }
 
 
                         <label>Assunto</label>
-                        <select value={assunto} onChange={(e) => setAssunto(e.target.value)}>
+                        <select value={assunto} onChange={(e) => {
+                            setAssunto(e.target.value)
+                        }}>
                             <option value="Suporte">Suporte</option>
                             <option value="Financeiro">Financeiro</option>
                             <option value="Visita">Visita</option>
@@ -64,7 +75,9 @@ export default function New() {
                                 type="radio"
                                 name="radio"
                                 value="Aberto"
-                                onChange={(e) => setStatus(e.target.value)}
+                                onChange={(e) => {
+                                    setStatus(e.target.value)
+                                }}
                                 checked={status === "Aberto"} />
                             <span>Em Aberto</span>
 
@@ -72,7 +85,9 @@ export default function New() {
                                 type="radio"
                                 name="radio"
                                 value="Progresso"
-                                onChange={(e) => setStatus(e.target.value)}
+                                onChange={(e) => {
+                                    setStatus(e.target.value)
+                                }}
                                 checked={status === "Progresso"} />
                             <span>Em Progresso</span>
 
@@ -80,7 +95,9 @@ export default function New() {
                                 type="radio"
                                 name="radio"
                                 value="Atendido"
-                                onChange={(e) => setStatus(e.target.value)}
+                                onChange={(e) => {
+                                    setStatus(e.target.value)
+                                }}
                                 checked={status === "Atendido"} />
                             <span>Atendido</span>
                         </div>
@@ -88,7 +105,9 @@ export default function New() {
                         <textarea type="text"
                             placeholder="Descreva seu problema aqui"
                             value={complemento}
-                            onChange={(e) => setComplemento(e.target.value)} />
+                            onChange={(e) => {
+                                setComplemento(e.target.value)
+                            }} />
 
                         <button type="submit">Registrar</button>
                     </form>
