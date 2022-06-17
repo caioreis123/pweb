@@ -8,6 +8,8 @@ import { AuthContext } from '../../contexts/auth';
 import { FiSettings, FiUpload } from 'react-icons/fi';
 import firebase from '../../services/firebaseConnection';
 import { toast } from 'react-toastify';
+import axios from 'axios';
+import {serverUrl} from "../../contexts/config";
 
 export default function Profile(){
   const { user, signOut, setUser, setLocalUser} = useContext(AuthContext);
@@ -24,8 +26,16 @@ function handleFile(e){
 
  async function handleSave(e){
     e.preventDefault();
-   
- 
+    const userData = {
+        nome,
+        email,
+        avatarUrl
+    }
+    axios.put(serverUrl + '/users', userData)
+        .then(response => {
+            console.log(response);
+            alert('Dados atualizados com sucesso!');
+        })
   }
 
   async function handleUpload(){
@@ -60,7 +70,7 @@ function handleFile(e){
             <input type="text" value={nome} onChange={ (e) => setNome(e.target.value) } />
 
             <label>Email</label>
-            <input type="text" value={email} disabled={true} />     
+            <input type="text" placeholder={email} disabled={true} />
 
             <button type="submit">Salvar</button>       
 

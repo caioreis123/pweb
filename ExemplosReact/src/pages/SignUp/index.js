@@ -4,6 +4,8 @@ import { useState, useContext } from 'react';
 import {AuthContext} from '../../contexts/auth';
 import auth from "../../services/firebaseConnection";
 import {createUserWithEmailAndPassword} from "firebase/auth";
+import axios from "axios";
+import {serverUrl} from "../../contexts/config";
 
 function SignUp() {
     const [nome, setNome]=useState('');
@@ -18,6 +20,7 @@ function SignUp() {
      if(email!==''&&senha!==''&&nome!==''){
          try{
              await createUserWithEmailAndPassword(auth, email, senha);
+             await axios.post(serverUrl + '/users', {email});
              console.log("Usuario criado com sucesso");
              navigate('/dashboard')
          }
