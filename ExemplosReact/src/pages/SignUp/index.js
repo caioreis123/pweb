@@ -1,33 +1,35 @@
 import logo from '../../assets/login.png'
-import {Link, useNavigate} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import { useState, useContext } from 'react';
 import {AuthContext} from '../../contexts/auth';
-import auth from "../../services/firebaseConnection";
-import {createUserWithEmailAndPassword} from "firebase/auth";
-import axios from "axios";
-import {serverUrl} from "../../contexts/config";
+import {useNavigate} from "react-router-dom";
+
+// import auth from "../../services/firebaseConnection";
+// import {createUserWithEmailAndPassword} from "firebase/auth";
+// import axios from "axios";
+// import {serverUrl} from "../../contexts/config";
 
 function SignUp() {
+    const {signUp} = useContext(AuthContext);
+
+    const navigateTo = useNavigate();
+
+
     const [nome, setNome]=useState('');
     const [email, setEmail]=useState('');
     const [senha, setSenha]=useState('');
 
-    const navigate = useNavigate();
-    
     async function handleSubmit(e){
       e.preventDefault();
         console.log("botão de cadastro clicado");
      if(email!==''&&senha!==''&&nome!==''){
          try{
-             await createUserWithEmailAndPassword(auth, email, senha);
-             await axios.post(serverUrl + '/users', {email});
-             console.log("Usuario criado com sucesso");
-             navigate('/dashboard')
+             await signUp(email, senha);
+             navigateTo("/dashboard");
          }
          catch(error){
              alert(error.message);
          }
-
      }
      else{
          alert("Preencha todos os campos");
@@ -56,7 +58,5 @@ function SignUp() {
       </div>
     );
   }
-  
-
   
   export default SignUp;

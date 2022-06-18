@@ -1,58 +1,44 @@
 import { useState, createContext, useEffect } from 'react'
-import firebase from '../services/firebaseConnection'
-import { toast } from 'react-toastify';
+import auth from "../services/firebaseConnection";
+import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged} from "firebase/auth";
+import axios from "axios";
+import {serverUrl} from "./config";
 export const AuthContext = createContext({});
 
 function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(false);
+    // const navigateTo = useNavigate();
+
 
     useEffect(() => {
-        function loadUser() {
-            const storagedUser = localStorage.getItem("usuarioLogado");
-            if (storagedUser) {
-                setUser(JSON.parse(storagedUser));
-                //setLoading(true);
-            }
-            //setLoading(false);
-        }
-        loadUser();
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser);
+        });
+        return () => unsubscribe();
     }, []);
 
-    async function signUp(email, password, nome) {
-        setLoading(true);
-        //Criar usario no Firebase baseado no email e senha e Salvador em um banco mysql
+    async function signUp(email, password) {
+        await createUserWithEmailAndPassword(auth, email, password)
+        await axios.post(serverUrl + '/user', {email});
+        console.log("Usuario criado com sucesso");
 
     }
 
-    async function signIn(email, password) {
-        
-        
-        setLoading(true);
-        //Fazer Login no firebase
-        toast.success('Bem-vindo de volta!!');
-        
+    async function logIn(email, password) {
+        await signInWithEmailAndPassword(auth, email, password);
     }
 
-
-    async function signOut() {
-        //Fazer logout no firebase
-    }
-
-    function setLocalUser(data){
-        localStorage.setItem('usuarioLogado', JSON.stringify(data));
+    async function logOut() {
+        return await signOut(auth);
     }
 
     return (
         <AuthContext.Provider value={{
-            signed: !!user,
             user,
-            signUp,
-            signOut,
-            signIn,
-            loading,
             setUser,
-            setLocalUser
+            signUp,
+            logIn,
+            logOut,
         }}>
             {children}
         </AuthContext.Provider>
