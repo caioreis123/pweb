@@ -42,7 +42,8 @@ export default function New() {
 
     }, []);
 
-    async function criarChamado2() {
+    async function criarChamado(e) {
+        e.preventDefault();
         console.log("clicou em criar chamado novo")
         const chamadoData = {
             client: clienteSelecionado,
@@ -54,11 +55,6 @@ export default function New() {
         await axios.post(serverUrl + '/chamado', chamadoData)
             .then(response => alert('Chamado criado com sucesso!'))
             .catch(error => alert('Erro ao criar chamado: ' + error.message))
-    }
-
-    async function criarChamado(e) {
-        e.preventDefault();
-        await criarChamado2();
     }
 
     return (
