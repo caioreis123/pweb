@@ -17,13 +17,12 @@ export default function Profile(){
   const [avatarUrl, setAvatarUrl] = useState('');
 
     useEffect(() => {
-        console.log("atualizou")
         axios.get(`${serverUrl}/user/${email}`)
             .then(response => {
                 if (response.data.name) setNome(response.data.name);
                 if(response.data.avatarUrl) setAvatarUrl(response.data.avatarUrl);
             });
-    }, []);
+    }, [email]);
 
 
  async function handleUpdateUserData(e){
@@ -35,8 +34,8 @@ export default function Profile(){
     }
     axios.put(serverUrl + '/user', userData)
         .then(response => {
-            console.log(response);
-            alert('Dados atualizados com sucesso!');
+            if(response.status === 200) alert('Dados do usuário atualizados com sucesso!');
+            else alert('Erro ao atualizar dados do usuário: ' + response.data.message);
         })
   }
 
@@ -68,7 +67,6 @@ export default function Profile(){
 
             <label>Nome</label>
             <input type="text" value={nome} onChange={ (e) => {
-                console.log(e.target.value)
                 setNome(e.target.value)
             } } />
 

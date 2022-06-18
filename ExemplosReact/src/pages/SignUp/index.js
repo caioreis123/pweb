@@ -21,7 +21,6 @@ function SignUp() {
 
     async function handleSubmit(e){
       e.preventDefault();
-        console.log("botão de cadastro clicado");
      if(email!==''&&senha!==''&&nome!==''){
          try{
              await signUp(email, senha);

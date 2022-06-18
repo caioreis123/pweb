@@ -5,23 +5,38 @@ import { toast } from 'react-toastify';
 import Header from '../../components/Header';
 import Title from '../../components/Title';
 import './costumers.css'
-export default function Costumers() {
+// import {useContext} from "@types/react";
+import {AuthContext} from "../../contexts/auth";
+import {serverUrl} from "../../contexts/config";
+import axios from "axios";
 
-    const [nome, setNome] = useState('');
+export default function Costumers() {
+    const [clientName, setClientName] = useState('');
     const [cnpj, setCnpj] = useState('');
-    const [endereco, setEndereco] = useState('');
+    const [address, setAddress] = useState('');
     const [clientes, setClientes] = useState([]);
 
     useEffect(()=>{
-        async function loadClientes() {
-            
-        }
-        loadClientes();
+        axios.get(`${serverUrl}/client`)
+            .then(response => {
+                if(response.status === 200) setClientes(response.data);
+                console.log(response.data);
+            })
     },[clientes]);
 
-    function handleSubmit(e){
+    function criarCliente(e){
         e.preventDefault();
-        
+        const clientData ={
+            name: clientName,
+            cnpj,
+            address,
+            timeOfRegistration: new Date().toISOString().split('T')[0], //ex: 2022-06-18
+        }
+        axios.post(serverUrl + '/client', clientData)
+            .then(response => {
+                if(response.status === 200) alert('Cliente cadastrado com sucesso!');
+                else alert('Erro ao criar cliente: ' + response.data.message);
+            })
     }
 
     async function exlcluir(id){
@@ -39,15 +54,15 @@ export default function Costumers() {
 
 
                 <div className="container">
-                    <form onSubmit={(e)=>{handleSubmit(e)}} className="form-profile costumers">
+                    <form onSubmit={(e)=>{criarCliente(e)}} className="form-profile costumers">
                         <label>Nome</label>
-                        <input placeholder="Digite o Nome Fantasia" type="text" value={nome} onChange={(e) => setNome(e.target.value)} />
+                        <input placeholder="Digite o Nome Fantasia" type="text" value={clientName} onChange={(e) => setClientName(e.target.value)} />
 
                         <label>CNPJ</label>
                         <input placeholder="Digite o CNPJ" type="text" value={cnpj} onChange={(e) => { setCnpj(e.target.value) }} />
 
                         <label>Endereço</label>
-                        <input placeholder="Digite o seu Endereço" type="text" value={endereco} onChange={(e) => { setEndereco(e.target.value) }} />
+                        <input placeholder="Digite o seu Endereço" type="text" value={address} onChange={(e) => { setAddress(e.target.value) }} />
 
                         <button className="button-costumers" type="submit">Salvar</button>
                     </form>
@@ -66,9 +81,9 @@ export default function Costumers() {
                   {clientes.map((cliente)=>{
                       return(
                         <tr>
-                        <td data-label="Cliente">{cliente.nome}</td>
+                        <td data-label="Cliente">{cliente.name}</td>
                         <td data-label="CNPJ">{cliente.cnpj}</td>
-                        <td data-label="Endereço">{cliente.endereco}</td>
+                        <td data-label="Endereço">{cliente.address}</td>
                         <td data-label="Cadastrado">20/06/2021</td>
                         <td data-label="#">
                           <button onClick={()=>{exlcluir(cliente.id)}} className="action" style={{backgroundColor: '#3583f6' }}>

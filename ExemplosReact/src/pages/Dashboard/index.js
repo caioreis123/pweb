@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 
 export default function Dashboard(){
   const [chamados, setChamados] = useState([1]);
+
   return(
     <div>
       <Header/>

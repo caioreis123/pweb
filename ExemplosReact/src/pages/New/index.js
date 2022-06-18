@@ -5,33 +5,60 @@ import { FiPlusCircle } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 import './new.css';
 import firebase from '../../services/firebaseConnection';
+import axios from "axios";
+import {serverUrl} from "../../contexts/config";
 
 export default function New() {
 
-    const [clientes, setClientes] = useState([{id: 1, nome:"caio"}, {id:2, nome: 'maria'}]);
+    const STATUS = {
+        EM_ABERTO: 'EM_ABERTO',
+        EM_PROGRESSO: 'EM_PROGRESSO',
+        ATENDIDO: 'ATENDIDO',
+    };
+
+    const ASSUNTO = {
+        SUPORTE: 'SUPORTE',
+        FINANCEIRO: 'FINANCEIRO',
+        VISITA: 'VISITA',
+    }
+
+    const [clientes, setClientes] = useState([]);
     const [loadingClientes, setLoadingClientes] = useState(true);
     const [clienteSelecionado, setClienteSelecionado] = useState(0);
-    const [assunto, setAssunto] = useState('Suporte');
-    const [status, setStatus] = useState('Aberto');
+    const [assunto, setAssunto] = useState(ASSUNTO.SUPORTE);
+    const [status, setStatus] = useState(STATUS.EM_ABERTO);
     const [complemento, setComplemento] = useState('');
 
 
     useEffect(() => {
-        async function loadClientes() {
-          
-        }
-        loadClientes();
+        console.log('useEffect');
+        axios.get(`${serverUrl}/client`)
+            .then(response => {
+                if(response.status === 200) {
+                    setClientes(response.data)
+                    setLoadingClientes(false)
+                }
+            })
+
     }, []);
 
-    async function handleChamado(e) {
-        e.preventDefault();
+    async function criarChamado2() {
         console.log("clicou em criar chamado novo")
-        console.log(clientes)
-        console.log(clienteSelecionado)
-        console.log(assunto)
-        console.log(status)
-        console.log(complemento)
-        console.log("fim")
+        const chamadoData = {
+            client: clienteSelecionado,
+            assunto,
+            status,
+            complemento,
+            dataDeCadastro: new Date().toISOString().split('T')[0], //ex: 2022-06-18
+        }
+        await axios.post(serverUrl + '/chamado', chamadoData)
+            .then(response => alert('Chamado criado com sucesso!'))
+            .catch(error => alert('Erro ao criar chamado: ' + error.message))
+    }
+
+    async function criarChamado(e) {
+        e.preventDefault();
+        await criarChamado2();
     }
 
     return (
@@ -45,14 +72,14 @@ export default function New() {
 
                 <div className="container">
 
-                    <form onSubmit={(e) => { handleChamado(e) }} className="form-profile">
+                    <form onSubmit={(e) =>  criarChamado(e)} className="form-profile">
                         <label>Cliente</label>
-                        {loadingClientes ?
+                        {clientes ?
                             <select value={clienteSelecionado} onChange={(e) => {
-                                setClienteSelecionado(e.target.value)
+                                setClienteSelecionado(clientes[e.target.value])
                             }}>
                                 {clientes.map((item, index) => {
-                                    return (<option key={item.id} value={index}>{item.nome}</option>);
+                                    return (<option key={item.cnpj} value={index}>{item.name}</option>);
                                 })}
                             </select>
                             :
@@ -64,9 +91,9 @@ export default function New() {
                         <select value={assunto} onChange={(e) => {
                             setAssunto(e.target.value)
                         }}>
-                            <option value="Suporte">Suporte</option>
-                            <option value="Financeiro">Financeiro</option>
-                            <option value="Visita">Visita</option>
+                            <option value={ASSUNTO.SUPORTE}>Suporte</option>
+                            <option value={ASSUNTO.FINANCEIRO}>Financeiro</option>
+                            <option value={ASSUNTO.VISITA}>Visita</option>
                         </select>
 
                         <label>Status</label>
@@ -74,31 +101,31 @@ export default function New() {
                             <input
                                 type="radio"
                                 name="radio"
-                                value="Aberto"
+                                value={STATUS.EM_ABERTO}
                                 onChange={(e) => {
                                     setStatus(e.target.value)
                                 }}
-                                checked={status === "Aberto"} />
+                                checked={status === STATUS.EM_ABERTO} />
                             <span>Em Aberto</span>
 
                             <input
                                 type="radio"
                                 name="radio"
-                                value="Progresso"
+                                value={STATUS.EM_PROGRESSO}
                                 onChange={(e) => {
                                     setStatus(e.target.value)
                                 }}
-                                checked={status === "Progresso"} />
+                                checked={status === STATUS.EM_PROGRESSO} />
                             <span>Em Progresso</span>
 
                             <input
                                 type="radio"
                                 name="radio"
-                                value="Atendido"
+                                value={STATUS.ATENDIDO}
                                 onChange={(e) => {
                                     setStatus(e.target.value)
                                 }}
-                                checked={status === "Atendido"} />
+                                checked={status === STATUS.ATENDIDO} />
                             <span>Atendido</span>
                         </div>
                         <label>Complemento</label>
