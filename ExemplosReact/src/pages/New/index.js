@@ -24,7 +24,7 @@ export default function New() {
 
     const [clientes, setClientes] = useState([]);
     const [loadingClientes, setLoadingClientes] = useState(true);
-    const [clienteSelecionado, setClienteSelecionado] = useState(0);
+    const [clienteSelecionado, setClienteSelecionado] = useState("");
     const [assunto, setAssunto] = useState(ASSUNTO.SUPORTE);
     const [status, setStatus] = useState(STATUS.EM_ABERTO);
     const [complemento, setComplemento] = useState('');
@@ -46,7 +46,7 @@ export default function New() {
         e.preventDefault();
         console.log("clicou em criar chamado novo")
         const chamadoData = {
-            client: clienteSelecionado,
+            client: clientes[clienteSelecionado],
             assunto,
             status,
             complemento,
@@ -72,7 +72,7 @@ export default function New() {
                         <label>Cliente</label>
                         {clientes ?
                             <select value={clienteSelecionado} onChange={(e) => {
-                                setClienteSelecionado(clientes[e.target.value])
+                                setClienteSelecionado(e.target.value)
                             }}>
                                 {clientes.map((item, index) => {
                                     return (<option key={item.cnpj} value={index}>{item.name}</option>);
