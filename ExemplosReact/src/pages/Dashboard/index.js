@@ -57,7 +57,7 @@ export default function Dashboard(){
               <tbody>
               {chamados.map(chamado => {
                   return (
-                      <tr>
+                      <tr key={chamado.id}>
                           <td data-label="Cliente">{ chamado.client.name }</td>
                           <td data-label="Assunto">{ chamado.assunto }</td>
                           <td data-label="Status">
