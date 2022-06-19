@@ -26,3 +26,4 @@ hs_err_pid*
 
 .idea
 /ExemplosReact/src/services/firebaseConfig.js
+/ExemplosReact/src/services/cloudinaryConfig.js

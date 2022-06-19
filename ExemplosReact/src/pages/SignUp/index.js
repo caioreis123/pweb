@@ -22,13 +22,9 @@ function SignUp() {
     async function handleSubmit(e){
       e.preventDefault();
      if(email!==''&&senha!==''&&nome!==''){
-         try{
-             await signUp(email, senha);
-             navigateTo("/dashboard");
-         }
-         catch(error){
-             alert(error.message);
-         }
+         await signUp(email, senha)
+             .then(() => navigateTo("/dashboard"))
+             .catch(error => alert(error.message));
      }
      else{
          alert("Preencha todos os campos");

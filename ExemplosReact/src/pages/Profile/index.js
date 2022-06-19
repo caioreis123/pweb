@@ -8,6 +8,7 @@ import { AuthContext } from '../../contexts/auth';
 import { FiSettings, FiUpload } from 'react-icons/fi';
 import axios from 'axios';
 import {serverUrl} from "../../contexts/config";
+import {cloudName, privateCloudKey, upload_preset} from "../../services/cloudinaryConfig";
 
 export default function Profile(){
   const { user, signOut} = useContext(AuthContext);
@@ -39,8 +40,19 @@ export default function Profile(){
         })
   }
 
-  async function handleUploadAvatarImage(){
-   
+  async function handleUploadAvatarImage(file){
+    const cloudUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`
+      const data = new FormData()
+      data.append('file', file)
+      data.append('upload_preset', upload_preset)
+      data.append('cloud_name', cloudName)
+        axios.post(cloudUrl, data)
+        .then(response => {
+            if(response.status === 200) {
+                setAvatarUrl(response.data.url)
+            }
+            else alert('Erro ao fazer upload da imagem: ' + response.data.message);
+        })
   }
 
   return(
@@ -57,7 +69,7 @@ export default function Profile(){
                 <FiUpload color="#000" size={25} />
               </span>
 
-              <input type="file" accept="image/*" onChange={handleUploadAvatarImage}/><br/>
+              <input type="file" accept="image/*" onChange={e => handleUploadAvatarImage(e.target.files[0])}/><br/>
               { avatarUrl === '' ?
                 <img src={avatar} width="250" height="250" alt="Foto de perfil do usuario" />
                 :

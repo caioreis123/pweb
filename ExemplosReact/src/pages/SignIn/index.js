@@ -13,8 +13,10 @@ function SignIn() {
 
     function handleSubmit(e){
       e.preventDefault();
-        logIn(email, senha);
-        navigateTo("/dashboard");
+          logIn(email, senha)
+              .then(() => navigateTo("/dashboard"))
+              .catch(error => alert(error.message));
+
     }
 
     return (
