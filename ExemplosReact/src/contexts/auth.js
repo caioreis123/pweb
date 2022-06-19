@@ -3,11 +3,11 @@ import auth from "../services/firebaseConnection";
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged} from "firebase/auth";
 import axios from "axios";
 import {serverUrl} from "./config";
+
 export const AuthContext = createContext({});
 
 function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
-    // const navigateTo = useNavigate();
 
 
     useEffect(() => {
