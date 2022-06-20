@@ -47,12 +47,7 @@ export default function Profile(){
       data.append('upload_preset', upload_preset)
       data.append('cloud_name', cloudName)
         axios.post(cloudUrl, data)
-        .then(response => {
-            if(response.status === 200) {
-                setAvatarUrl(response.data.url)
-            }
-            else alert('Erro ao fazer upload da imagem: ' + response.data.message);
-        })
+        .catch(error => alert('Erro ao remover cliente: ' + error.message))
   }
 
   return(

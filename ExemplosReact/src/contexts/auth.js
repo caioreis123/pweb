@@ -20,8 +20,6 @@ function AuthProvider({ children }) {
     async function signUp(email, password) {
         await createUserWithEmailAndPassword(auth, email, password)
         await axios.post(serverUrl + '/user', {email});
-        console.log("Usuario criado com sucesso");
-
     }
 
     async function logIn(email, password) {

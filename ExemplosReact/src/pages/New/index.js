@@ -31,7 +31,6 @@ export default function New() {
 
 
     useEffect(() => {
-        console.log('useEffect');
         axios.get(`${serverUrl}/client`)
             .then(response => {
                 if(response.status === 200) {
@@ -44,7 +43,6 @@ export default function New() {
 
     async function criarChamado(e) {
         e.preventDefault();
-        console.log("clicou em criar chamado novo")
         const chamadoData = {
             client: clientes[clienteSelecionado],
             assunto,

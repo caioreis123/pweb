@@ -13,12 +13,11 @@ function Header() {
     const [avatarUrl, setAvatarUrl] = useState();
 
     useEffect(() => {
-        console.log("rodou ela")
         axios.get(`${serverUrl}/user/${user.email}`)
             .then(response => {
                 if(response.data.avatarUrl) setAvatarUrl(response.data.avatarUrl);
-                console.log(response.data.avatarUrl);
-            });
+            })
+
     }, [avatar]);
 
     return (

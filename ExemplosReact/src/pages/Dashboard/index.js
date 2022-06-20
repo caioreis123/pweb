@@ -14,7 +14,7 @@ export default function Dashboard(){
     useEffect(() => {
         axios.get(serverUrl + '/chamado')
         .then(response => {
-            if(response.data) setChamados(response.data);
+            if(response.status === 200) setChamados(response.data);
             else console.log('Erro ao carregar chamados');
         })
     }, []);

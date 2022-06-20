@@ -8,3 +8,9 @@
     width: 100px;
     margin-left: auto; 
 }
+
+.editable-cell{
+    font-size: 14px;
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+}

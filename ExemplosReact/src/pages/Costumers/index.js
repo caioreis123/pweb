@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
-import { FiUser, FiDelete,FiEdit2 } from 'react-icons/fi';
+import { FiUser, FiDelete, FiEdit2, FiCheck } from 'react-icons/fi';
 import firebase from '../../services/firebaseConnection';
 import { toast } from 'react-toastify';
 import Header from '../../components/Header';
 import Title from '../../components/Title';
 import './costumers.css'
-// import {useContext} from "@types/react";
 import {AuthContext} from "../../contexts/auth";
 import {serverUrl} from "../../contexts/config";
 import axios from "axios";
@@ -15,12 +14,14 @@ export default function Costumers() {
     const [cnpj, setCnpj] = useState('');
     const [address, setAddress] = useState('');
     const [clientes, setClientes] = useState([]);
+    const [clienteEditavelCnpj, setClienteEditavelCnpj] = useState(null);
+    const [updatedName, setUpdatedName] = useState('');
+    const [updatedAddress, setUpdatedAddress] = useState('');
 
     useEffect(()=>{
         axios.get(`${serverUrl}/client`)
             .then(response => {
                 if(response.status === 200) setClientes(response.data);
-                console.log(response.data);
             })
     },[clientes]);
 
@@ -39,9 +40,35 @@ export default function Costumers() {
             })
     }
 
-    async function exlcluir(id){
-        
-     }
+    async function removerCliente(cnpj){
+        axios.delete(`${serverUrl}/client/${cnpj}`)
+            .catch(error => alert('Erro ao remover cliente: ' + error.message))
+    }
+
+    function atualizarCliente(cliente) {
+        axios.patch(`${serverUrl}/client`, cliente)
+            .catch(error => alert('Erro ao atualizar cliente: ' + error.message))
+    }
+
+    function editarCliente(cliente) {
+        if(cliente.cnpj === clienteEditavelCnpj) {
+            console.log(cliente);
+            const clienteAtualizado = {
+                cnpj: cliente.cnpj,
+                name: updatedName || cliente.name,
+                address: updatedAddress || cliente.address,
+            }
+            atualizarCliente(clienteAtualizado);
+            setClienteEditavelCnpj(null)
+        }
+        else {
+            setClienteEditavelCnpj(cliente.cnpj);
+            setUpdatedName(cliente.name);
+            setUpdatedAddress(cliente.address);
+        }
+    }
+
+
 
     return (
         <div>
@@ -80,17 +107,25 @@ export default function Costumers() {
               <tbody>
                   {clientes.map((cliente)=>{
                       return(
-                        <tr>
-                        <td data-label="Cliente">{cliente.name}</td>
+                        <tr key={cliente.cnpj}>
+                            {cliente.cnpj === clienteEditavelCnpj ?
+                                <td>
+                                    <input className="editable-cell" type="text" value={updatedName} onChange={(e) => setUpdatedName(e.target.value)} />
+                                </td>
+                                : <td data-label="Cliente">{cliente.name}</td>}
                         <td data-label="CNPJ">{cliente.cnpj}</td>
-                        <td data-label="Endereço">{cliente.address}</td>
+                            {cliente.cnpj === clienteEditavelCnpj ?
+                               <td>
+                                   <input className="editable-cell" type="text" value={updatedAddress} onChange={(e) => setUpdatedAddress(e.target.value)} />
+                               </td>
+                                : <td data-label="Endereço">{cliente.address}</td>}
                         <td data-label="Cadastrado">20/06/2021</td>
                         <td data-label="#">
-                          <button onClick={()=>{exlcluir(cliente.id)}} className="action" style={{backgroundColor: '#3583f6' }}>
+                          <button onClick={()=>{removerCliente(cliente.cnpj)}} className="action" style={{backgroundColor: '#3583f6' }}>
                             <FiDelete color="#FFF" size={17} />
                           </button>
-                          <button className="action" style={{backgroundColor: '#F6a935' }}>
-                            <FiEdit2 color="#FFF" size={17} />
+                          <button onClick={()=>editarCliente(cliente)} className="action" style={{backgroundColor: '#F6a935' }}>
+                              {cliente.cnpj === clienteEditavelCnpj ? <FiCheck color="green" size={17}/>: <FiEdit2 color="#FFF" size={17}/>}
                           </button>
                         </td>
                       </tr>
