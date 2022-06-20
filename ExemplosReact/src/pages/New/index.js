@@ -26,7 +26,7 @@ export default function New() {
 
     const [clientes, setClientes] = useState([]);
     const [loadingClientes, setLoadingClientes] = useState(true);
-    const [clienteSelecionado, setClienteSelecionado] = useState("");
+    const [clienteSelecionado, setClienteSelecionado] = useState(0);
     const [assunto, setAssunto] = useState(ASSUNTO.SUPORTE);
     const [status, setStatus] = useState(STATUS.EM_ABERTO);
     const [complemento, setComplemento] = useState('');

@@ -13,8 +13,10 @@ import {STATUS} from "../New";
 export default function Dashboard(){
   const [chamados, setChamados] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isComplementoAberto, setIsComplementoAberto] = useState(false);
   const [novoStatus, setNovoStatus] = useState(null);
   const [chamadoASerAtualizado, setChamadoASerAtualizado] = useState(null);
+  const [chamadoSelecionado, setChamadoSelecionado] = useState(null);
 
     useEffect(() => {
         axios.get(serverUrl + '/chamado')
@@ -29,6 +31,10 @@ export default function Dashboard(){
         console.log(chamadoASerAtualizado);
         axios.patch(serverUrl + '/chamado/', chamadoASerAtualizado)
             .catch(error => alert(error.message));
+    }
+
+    function closeComplemento(event, reason) {
+        if (reason ==="backdropClick") setIsComplementoAberto(false);
     }
 
     return(
@@ -88,23 +94,19 @@ export default function Dashboard(){
                           </td>
                           <td data-label="Cadastrado">{ chamado.dataDeCadastro }</td>
                           <td data-label="#">
-                              <Dialog open={isDialogOpen}>
-                                    <DialogTitle>Qual o novo status?</DialogTitle>
-                                    <DialogContent>
-                                        <RadioGroup defaultValue={chamado.status} row name="status" onChange={(e) => setNovoStatus(e.target.value)}>
-                                            <div><Radio value={STATUS.EM_ABERTO} /> Em Aberto</div>
-                                            <div><Radio value={STATUS.EM_PROGRESSO} /> Em Progresso</div>
-                                            <div><Radio value={STATUS.ATENDIDO} /> Atendido</div>
-                                        </RadioGroup>
-                                        <DialogActions>
-                                            <button onClick={()=> {
-                                                setIsDialogOpen(false)
-                                                atualizarStatus();
-                                            }}>Confirmar</button>
-                                        </DialogActions>
-                                    </DialogContent>
-                              </Dialog>
-                              <button className="action" style={{backgroundColor: '#3583f6' }}>
+                              {chamadoSelecionado ?
+                                  <Dialog open={isComplementoAberto} onClose={closeComplemento}>
+                                  <DialogTitle>Complemento:</DialogTitle>
+                                  <DialogContent>
+                                  <DialogContentText>{chamadoSelecionado.complemento || "sem complemento específico"}</DialogContentText>
+                                  </DialogContent>
+                                  </Dialog>: null
+                              }
+
+                              <button onClick={()=> {
+                                  setChamadoSelecionado(chamado);
+                                  setIsComplementoAberto(true)
+                              }} className="action" style={{backgroundColor: '#3583f6' }}>
                                   <FiSearch color="#FFF" size={17} />
                               </button>
                               <button onClick={()=> {
@@ -113,6 +115,22 @@ export default function Dashboard(){
                               }} className="action" style={{backgroundColor: '#F6a935' }}>
                                   <FiEdit2 color="#FFF" size={17} />
                               </button>
+                              <Dialog open={isDialogOpen}>
+                                  <DialogTitle>Qual o novo status?</DialogTitle>
+                                  <DialogContent>
+                                      <RadioGroup defaultValue={chamado.status} row name="status" onChange={(e) => setNovoStatus(e.target.value)}>
+                                          <div><Radio value={STATUS.EM_ABERTO} /> Em Aberto</div>
+                                          <div><Radio value={STATUS.EM_PROGRESSO} /> Em Progresso</div>
+                                          <div><Radio value={STATUS.ATENDIDO} /> Atendido</div>
+                                      </RadioGroup>
+                                      <DialogActions>
+                                          <button onClick={()=> {
+                                              setIsDialogOpen(false)
+                                              atualizarStatus();
+                                          }}>Confirmar</button>
+                                      </DialogActions>
+                                  </DialogContent>
+                              </Dialog>
                           </td>
                       </tr>
                   )
