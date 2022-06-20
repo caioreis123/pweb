@@ -7,9 +7,14 @@ import { FiMessageSquare, FiPlus, FiSearch, FiEdit2 } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import axios from "axios";
 import {serverUrl} from "../../contexts/config";
+import {Dialog, DialogTitle, DialogContent, Button, DialogContentText, DialogActions, RadioGroup, Radio} from '@mui/material'
+import {STATUS} from "../New";
 
 export default function Dashboard(){
   const [chamados, setChamados] = useState([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [novoStatus, setNovoStatus] = useState(null);
+  const [chamadoASerAtualizado, setChamadoASerAtualizado] = useState(null);
 
     useEffect(() => {
         axios.get(serverUrl + '/chamado')
@@ -19,7 +24,14 @@ export default function Dashboard(){
         })
     }, []);
 
-  return(
+    function atualizarStatus() {
+        chamadoASerAtualizado.status = novoStatus;
+        console.log(chamadoASerAtualizado);
+        axios.patch(serverUrl + '/chamado/', chamadoASerAtualizado)
+            .catch(error => alert(error.message));
+    }
+
+    return(
     <div>
       <Header/>
 
@@ -55,7 +67,7 @@ export default function Dashboard(){
                 </tr>
               </thead>
               <tbody>
-              {chamados.map(chamado => {
+              {chamados.map((chamado) => {
                   return (
                       <tr key={chamado.id}>
                           <td data-label="Cliente">{ chamado.client.name }</td>
@@ -76,10 +88,29 @@ export default function Dashboard(){
                           </td>
                           <td data-label="Cadastrado">{ chamado.dataDeCadastro }</td>
                           <td data-label="#">
+                              <Dialog open={isDialogOpen}>
+                                    <DialogTitle>Qual o novo status?</DialogTitle>
+                                    <DialogContent>
+                                        <RadioGroup defaultValue={chamado.status} row name="status" onChange={(e) => setNovoStatus(e.target.value)}>
+                                            <div><Radio value={STATUS.EM_ABERTO} /> Em Aberto</div>
+                                            <div><Radio value={STATUS.EM_PROGRESSO} /> Em Progresso</div>
+                                            <div><Radio value={STATUS.ATENDIDO} /> Atendido</div>
+                                        </RadioGroup>
+                                        <DialogActions>
+                                            <button onClick={()=> {
+                                                setIsDialogOpen(false)
+                                                atualizarStatus();
+                                            }}>Confirmar</button>
+                                        </DialogActions>
+                                    </DialogContent>
+                              </Dialog>
                               <button className="action" style={{backgroundColor: '#3583f6' }}>
                                   <FiSearch color="#FFF" size={17} />
                               </button>
-                              <button className="action" style={{backgroundColor: '#F6a935' }}>
+                              <button onClick={()=> {
+                                  setChamadoASerAtualizado(chamado)
+                                  setIsDialogOpen(true)
+                              }} className="action" style={{backgroundColor: '#F6a935' }}>
                                   <FiEdit2 color="#FFF" size={17} />
                               </button>
                           </td>
