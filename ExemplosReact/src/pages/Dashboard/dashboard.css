@@ -132,4 +132,10 @@ table td .badge{
     border-bottom: 0;
   }
 
+  .dialog{
+    color: red;
+    background-color: green;
+    display: block;
+  }
+
 }

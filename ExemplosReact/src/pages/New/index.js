@@ -8,19 +8,21 @@ import firebase from '../../services/firebaseConnection';
 import axios from "axios";
 import {serverUrl} from "../../contexts/config";
 
+export const STATUS = {
+    EM_ABERTO: 'EM_ABERTO',
+    EM_PROGRESSO: 'EM_PROGRESSO',
+    ATENDIDO: 'ATENDIDO',
+};
+
+const ASSUNTO = {
+    SUPORTE: 'SUPORTE',
+    FINANCEIRO: 'FINANCEIRO',
+    VISITA: 'VISITA',
+}
+
 export default function New() {
 
-    const STATUS = {
-        EM_ABERTO: 'EM_ABERTO',
-        EM_PROGRESSO: 'EM_PROGRESSO',
-        ATENDIDO: 'ATENDIDO',
-    };
 
-    const ASSUNTO = {
-        SUPORTE: 'SUPORTE',
-        FINANCEIRO: 'FINANCEIRO',
-        VISITA: 'VISITA',
-    }
 
     const [clientes, setClientes] = useState([]);
     const [loadingClientes, setLoadingClientes] = useState(true);
