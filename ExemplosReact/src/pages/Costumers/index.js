@@ -23,7 +23,7 @@ export default function Costumers() {
             .then(response => {
                 if(response.status === 200) setClientes(response.data);
             })
-    },[clientes]);
+    },[clientes, address]);
 
     function criarCliente(e){
         e.preventDefault();
