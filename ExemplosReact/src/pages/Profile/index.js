@@ -8,7 +8,7 @@ import { AuthContext } from '../../contexts/auth';
 import { FiSettings, FiUpload } from 'react-icons/fi';
 import axios from 'axios';
 import {serverUrl} from "../../contexts/config";
-import {cloudName, privateCloudKey, upload_preset} from "../../services/cloudinaryConfig";
+import {cloudName, upload_preset} from "../../services/cloudinaryConfig";
 
 export default function Profile(){
   const { user, signOut} = useContext(AuthContext);
@@ -46,8 +46,13 @@ export default function Profile(){
       data.append('file', file)
       data.append('upload_preset', upload_preset)
       data.append('cloud_name', cloudName)
-        axios.post(cloudUrl, data)
-        .catch(error => alert('Erro ao remover cliente: ' + error.message))
+      axios.post(cloudUrl, data)
+          .then(response => {
+              console.log("upload de imagem realizado")
+              setAvatarUrl(response.data.url)
+              console.log(response);
+          })
+        .catch(error => alert('Erro ao subir imagem: ' + error.message))
   }
 
   return(
