@@ -21,7 +21,10 @@ export default function Dashboard(){
     useEffect(() => {
         axios.get(serverUrl + '/chamado')
         .then(response => {
-            if(response.status === 200) setChamados(response.data);
+            if(response.status === 200) {
+                setChamados(response.data)
+                setChamadoSelecionado(response.data[0])
+            }
             else console.log('Erro ao carregar chamados');
         })
     }, []);
@@ -111,6 +114,7 @@ export default function Dashboard(){
                               </button>
                               <button onClick={()=> {
                                   setChamadoASerAtualizado(chamado)
+                                  setChamadoSelecionado(chamado)
                                   setIsDialogOpen(true)
                               }} className="action" style={{backgroundColor: '#F6a935' }}>
                                   <FiEdit2 color="#FFF" size={17} />
@@ -118,7 +122,7 @@ export default function Dashboard(){
                               <Dialog open={isDialogOpen}>
                                   <DialogTitle>Qual o novo status?</DialogTitle>
                                   <DialogContent>
-                                      <RadioGroup defaultValue={chamado.status} row name="status" onChange={(e) => setNovoStatus(e.target.value)}>
+                                      <RadioGroup defaultValue={chamadoSelecionado.status} row name="status" onChange={(e) => setNovoStatus(e.target.value)}>
                                           <div><Radio value={STATUS.EM_ABERTO} /> Em Aberto</div>
                                           <div><Radio value={STATUS.EM_PROGRESSO} /> Em Progresso</div>
                                           <div><Radio value={STATUS.ATENDIDO} /> Atendido</div>
