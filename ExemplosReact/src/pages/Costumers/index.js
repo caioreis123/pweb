@@ -30,7 +30,7 @@ export default function Costumers() {
 
     useEffect(()=>{
         listarCLientes();
-    },[clientes]);
+    },[]);
 
     function criarCliente(e){
         e.preventDefault();
@@ -53,11 +53,18 @@ export default function Costumers() {
 
     async function removerCliente(cnpj){
         axios.delete(`${serverUrl}/client/${cnpj}`)
-            .catch(error => alert('Erro ao remover cliente: ' + error.message))
+            .then(response => {
+                console.log(response)
+                listarCLientes()
+            })
+            .catch(error => {
+                alert('Erro ao remover cliente: ' + error.message)
+            })
     }
 
     function atualizarCliente(cliente) {
         axios.patch(`${serverUrl}/client`, cliente)
+            .then( r => listarCLientes())
             .catch(error => alert('Erro ao atualizar cliente: ' + error.message))
     }
 
@@ -70,7 +77,6 @@ export default function Costumers() {
             }
             atualizarCliente(clienteAtualizado);
             setClienteEditavelCnpj(null)
-            listarCLientes();
         }
         else {
             setClienteEditavelCnpj(cliente.cnpj);
