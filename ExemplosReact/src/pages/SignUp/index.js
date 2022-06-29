@@ -4,11 +4,6 @@ import { useState, useContext } from 'react';
 import {AuthContext} from '../../contexts/auth';
 import {useNavigate} from "react-router-dom";
 
-// import auth from "../../services/firebaseConnection";
-// import {createUserWithEmailAndPassword} from "firebase/auth";
-// import axios from "axios";
-// import {serverUrl} from "../../contexts/config";
-
 function SignUp() {
     const {signUp} = useContext(AuthContext);
 

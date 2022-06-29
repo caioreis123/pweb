@@ -18,7 +18,7 @@ function Header() {
                 if(response.data.avatarUrl) setAvatarUrl(response.data.avatarUrl);
             })
 
-    }, [avatar]);
+    }, [avatar, user.avatarUrl]);
 
     return (
         <div className="sidebar">

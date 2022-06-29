@@ -11,7 +11,7 @@ import {serverUrl} from "../../contexts/config";
 import {cloudName, upload_preset} from "../../services/cloudinaryConfig";
 
 export default function Profile(){
-  const { user, signOut} = useContext(AuthContext);
+  const { user, signOut, setUser} = useContext(AuthContext);
 
   const [nome, setNome] = useState('');
   const [email] = useState(user.email);
@@ -35,7 +35,10 @@ export default function Profile(){
     }
     axios.put(serverUrl + '/user', userData)
         .then(response => {
-            if(response.status === 200) alert('Dados do usuário atualizados com sucesso!');
+            if(response.status === 200) {
+                setUser(response.data);
+                alert('Dados do usuário atualizados com sucesso!')
+            }
             else alert('Erro ao atualizar dados do usuário: ' + response.data.message);
         })
   }
@@ -50,7 +53,6 @@ export default function Profile(){
           .then(response => {
               console.log("upload de imagem realizado")
               setAvatarUrl(response.data.url)
-              console.log(response);
           })
         .catch(error => alert('Erro ao subir imagem: ' + error.message))
   }

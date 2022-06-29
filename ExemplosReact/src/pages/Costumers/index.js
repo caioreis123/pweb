@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react';
 import { FiUser, FiDelete, FiEdit2, FiCheck } from 'react-icons/fi';
-import firebase from '../../services/firebaseConnection';
-import { toast } from 'react-toastify';
 import Header from '../../components/Header';
 import Title from '../../components/Title';
 import './costumers.css'
-import {AuthContext} from "../../contexts/auth";
 import {serverUrl} from "../../contexts/config";
 import axios from "axios";
 
@@ -52,7 +49,6 @@ export default function Costumers() {
 
     function editarCliente(cliente) {
         if(cliente.cnpj === clienteEditavelCnpj) {
-            console.log(cliente);
             const clienteAtualizado = {
                 cnpj: cliente.cnpj,
                 name: updatedName || cliente.name,
