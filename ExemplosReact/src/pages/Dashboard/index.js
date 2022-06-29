@@ -31,7 +31,6 @@ export default function Dashboard(){
 
     function atualizarStatus() {
         chamadoASerAtualizado.status = novoStatus;
-        console.log(chamadoASerAtualizado);
         axios.patch(serverUrl + '/chamado/', chamadoASerAtualizado)
             .catch(error => alert(error.message));
     }

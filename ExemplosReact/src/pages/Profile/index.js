@@ -11,7 +11,7 @@ import {serverUrl} from "../../contexts/config";
 import {cloudName, upload_preset} from "../../services/cloudinaryConfig";
 
 export default function Profile(){
-  const { user, signOut, setUser} = useContext(AuthContext);
+  const { user, logOut, setUserAvatar} = useContext(AuthContext);
 
   const [nome, setNome] = useState('');
   const [email] = useState(user.email);
@@ -36,10 +36,13 @@ export default function Profile(){
     axios.put(serverUrl + '/user', userData)
         .then(response => {
             if(response.status === 200) {
-                setUser(response.data);
+                setUserAvatar(response.data.avatarUrl);
                 alert('Dados do usuário atualizados com sucesso!')
             }
-            else alert('Erro ao atualizar dados do usuário: ' + response.data.message);
+            else {
+                console.log(response)
+                alert('Erro ao atualizar dados do usuário: ' + response.data.message)
+            }
         })
   }
 
@@ -93,7 +96,7 @@ export default function Profile(){
         </div>
 
         <div className="container">
-            <button className="logout-btn" onClick={ () => signOut() } >
+            <button className="logout-btn" onClick={ () => logOut() } >
                Sair
             </button>
         </div>

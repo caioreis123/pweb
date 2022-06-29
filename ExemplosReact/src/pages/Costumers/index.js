@@ -15,12 +15,22 @@ export default function Costumers() {
     const [updatedName, setUpdatedName] = useState('');
     const [updatedAddress, setUpdatedAddress] = useState('');
 
-    useEffect(()=>{
+    function listarCLientes() {
         axios.get(`${serverUrl}/client`)
             .then(response => {
-                if(response.status === 200) setClientes(response.data);
+                if (response.status === 200) {
+                    setClientes(response.data)
+                }
             })
-    },[clientes, address]);
+            .catch(error => {
+                console.log(error)
+                alert('Erro ao buscar clientes: ' + error.message)
+            })
+    }
+
+    useEffect(()=>{
+        listarCLientes();
+    },[clientes]);
 
     function criarCliente(e){
         e.preventDefault();
@@ -32,7 +42,11 @@ export default function Costumers() {
         }
         axios.post(serverUrl + '/client', clientData)
             .then(response => {
-                if(response.status === 200) alert('Cliente cadastrado com sucesso!');
+                console.log(response)
+                if(response.status === 200) {
+                    setClientes([...clientes, response.data])
+                    alert('Cliente cadastrado com sucesso!')
+                }
                 else alert('Erro ao criar cliente: ' + response.data.message);
             })
     }
@@ -56,6 +70,7 @@ export default function Costumers() {
             }
             atualizarCliente(clienteAtualizado);
             setClienteEditavelCnpj(null)
+            listarCLientes();
         }
         else {
             setClienteEditavelCnpj(cliente.cnpj);

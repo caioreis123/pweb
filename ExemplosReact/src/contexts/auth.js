@@ -8,6 +8,7 @@ export const AuthContext = createContext({});
 
 function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
+    const [userAvatar, setUserAvatar] = useState(null);
 
 
     useEffect(() => {
@@ -17,9 +18,9 @@ function AuthProvider({ children }) {
         return () => unsubscribe();
     }, []);
 
-    async function signUp(email, password) {
+    async function signUp(email, password, name) {
         await createUserWithEmailAndPassword(auth, email, password)
-        await axios.post(serverUrl + '/user', {email});
+        await axios.post(serverUrl + '/user', {email, name});
     }
 
     async function logIn(email, password) {
@@ -37,6 +38,8 @@ function AuthProvider({ children }) {
             signUp,
             logIn,
             logOut,
+            setUserAvatar,
+            userAvatar
         }}>
             {children}
         </AuthContext.Provider>

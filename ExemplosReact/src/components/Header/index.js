@@ -9,7 +9,7 @@ import axios from "axios";
 import {serverUrl} from "../../contexts/config";
 
 function Header() {
-    const { user } = useContext(AuthContext);
+    const { user, userAvatar } = useContext(AuthContext);
     const [avatarUrl, setAvatarUrl] = useState();
 
     useEffect(() => {
@@ -18,7 +18,7 @@ function Header() {
                 if(response.data.avatarUrl) setAvatarUrl(response.data.avatarUrl);
             })
 
-    }, [avatar, user.avatarUrl]);
+    }, [avatarUrl, userAvatar, user]);
 
     return (
         <div className="sidebar">

@@ -17,7 +17,7 @@ function SignUp() {
     async function handleSubmit(e){
       e.preventDefault();
      if(email!==''&&senha!==''&&nome!==''){
-         await signUp(email, senha)
+         await signUp(email, senha, nome)
              .then(() => navigateTo("/dashboard"))
              .catch(error => alert(error.message));
      }
